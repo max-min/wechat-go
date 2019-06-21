@@ -31,8 +31,10 @@ import (
 	"strings"
 )
 
+// 公用结构的定义
+
+// msg types
 const (
-	// msg types
 	MSG_TEXT        = 1     // text message
 	MSG_IMG         = 3     // image message
 	MSG_VOICE       = 34    // voice message

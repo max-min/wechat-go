@@ -35,11 +35,12 @@ import (
 	"time"
 
 	"github.com/mdp/qrterminal"
-	"github.com/songtianyi/rrframework/config"
+	rrconfig "github.com/songtianyi/rrframework/config"
 	"github.com/songtianyi/rrframework/logs"
-	"github.com/songtianyi/rrframework/storage"
+	rrstorage "github.com/songtianyi/rrframework/storage"
 )
 
+// 每次登陆web微信就是一个新的session的产生，再session中处理登陆，消息接受等微信业务
 const (
 	// WEB_MODE: in this mode CreateSession will return a QRCode image url
 	WEB_MODE = iota + 1
@@ -309,6 +310,7 @@ func (s *Session) LoginAndServe(useCache bool) error {
 		return err
 	}
 
+	// 创建contactManager
 	s.Cm, err = CreateContactManagerFromBytes(cb)
 	if err != nil {
 		return err
@@ -316,8 +318,9 @@ func (s *Session) LoginAndServe(useCache bool) error {
 
 	// for v2
 	s.Cm.AddUser(s.Bot)
-	s.AfterLogin()
+	s.AfterLogin() // 登陆成功需要处理的事情
 
+	// 进入服务，等待接收微信消息
 	if err := s.serve(); err != nil {
 		return err
 	}
@@ -336,6 +339,7 @@ func (s *Session) serve() error {
 	msg := make(chan []byte, 1000)
 	// syncheck
 	errChan := make(chan error)
+	// 登陆成功后，一个协程处理接收消息，  收到消息后一个协程consumer处理回应消息，或者接受消息后的业务
 	go s.producer(msg, errChan)
 	for {
 		select {

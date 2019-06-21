@@ -64,13 +64,14 @@ var (
 	}
 )
 
-// ContactManager: contact manager
+// 关于用户的相关信息， 包括好友，群聊，公众号
+
+// ContactManager contact manager
 type ContactManager struct {
 	cl []*User //contact list
 }
 
-// create
-// CreateContactManagerFromBytes: create contact maanger from bytes
+// CreateContactManagerFromBytes create contact maanger from bytes
 func CreateContactManagerFromBytes(cb []byte) (*ContactManager, error) {
 	var cr WxWebGetContactResponse
 	if err := json.Unmarshal(cb, &cr); err != nil {
@@ -82,8 +83,7 @@ func CreateContactManagerFromBytes(cb []byte) (*ContactManager, error) {
 	return cm, nil
 }
 
-// update
-// AddContactFromBytes: upate contact manager from wxwebgetcontact response
+// AddContactFromBytes  upate contact manager from wxwebgetcontact response
 func (s *ContactManager) AddUserFromBytes(cb []byte) error {
 	var cr WxWebGetContactResponse
 	if err := json.Unmarshal(cb, &cr); err != nil {
@@ -93,7 +93,7 @@ func (s *ContactManager) AddUserFromBytes(cb []byte) error {
 	return nil
 }
 
-// AddContactFromUser: add a new user to contact manager
+// AddUser add a new user to contact manager
 func (s *ContactManager) AddUser(user *User) {
 	if user == nil {
 		return
@@ -101,8 +101,7 @@ func (s *ContactManager) AddUser(user *User) {
 	s.cl = append(s.cl, user)
 }
 
-// get
-// GetContactByUserName: get contact by UserName
+// GetContactByUserName  get contact by UserName
 func (s *ContactManager) GetContactByUserName(un string) *User {
 	for _, v := range s.cl {
 		if v.UserName == un {
@@ -112,7 +111,7 @@ func (s *ContactManager) GetContactByUserName(un string) *User {
 	return nil
 }
 
-// GetGroupContacts: get all group contacts
+// GetGroupContacts  get all group contacts
 func (s *ContactManager) GetGroupContacts() []*User {
 	clarray := make([]*User, 0)
 	for _, v := range s.cl {
@@ -123,7 +122,7 @@ func (s *ContactManager) GetGroupContacts() []*User {
 	return clarray
 }
 
-// GetStrangers: not group contact and not StarFriend and not special contact
+// GetStrangers  not group contact and not StarFriend and not special contact
 func (s *ContactManager) GetStrangers() []*User {
 	clarray := make([]*User, 0)
 	for _, v := range s.cl {
@@ -137,7 +136,7 @@ func (s *ContactManager) GetStrangers() []*User {
 	return clarray
 }
 
-// GetContactByName: get contacts by User.NickName | User.RemarkName | User.DisplayName
+// GetContactsByName get contacts by User.NickName | User.RemarkName | User.DisplayName
 func (s *ContactManager) GetContactsByName(sig string) []*User {
 	clarray := make([]*User, 0)
 	for _, v := range s.cl {
@@ -148,7 +147,7 @@ func (s *ContactManager) GetContactsByName(sig string) []*User {
 	return clarray
 }
 
-// GetContactByPYQuanPin: get contact by User.PYQuanPin | User.RemarkPYQuanPin
+// GetContactByPYQuanPin get contact by User.PYQuanPin | User.RemarkPYQuanPin
 func (s *ContactManager) GetContactByPYQuanPin(sig string) *User {
 	for _, v := range s.cl {
 		if v.PYQuanPin == sig || v.RemarkPYQuanPin == sig {
@@ -158,7 +157,7 @@ func (s *ContactManager) GetContactByPYQuanPin(sig string) *User {
 	return nil
 }
 
-// GetAll: get all contacts
+// GetAll get all contacts
 func (s *ContactManager) GetAll() []*User {
 	return s.cl
 }
